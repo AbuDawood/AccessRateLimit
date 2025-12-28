@@ -1,10 +1,10 @@
-# Elf.Core.AccessRateLimit
+# Elf.AccessRateLimit
 
 Distributed, Redis-backed access rate limiting for expensive endpoints in ASP.NET Core (.NET 8).
 
 ## Overview
 
-Elf.Core.AccessRateLimit protects heavy endpoints (downloads, exports, reports) from abuse by enforcing rate limits across multiple app instances using Redis as the source of truth. It uses atomic Lua scripts for concurrency safety and supports per-endpoint policies, escalation penalties, and simple extension methods.
+Elf.AccessRateLimit protects heavy endpoints (downloads, exports, reports) from abuse by enforcing rate limits across multiple app instances using Redis as the source of truth. It uses atomic Lua scripts for concurrency safety and supports per-endpoint policies, escalation penalties, and simple extension methods.
 
 Key features:
 - Distributed enforcement via StackExchange.Redis
@@ -23,7 +23,7 @@ Key features:
 
 ```csharp
 using StackExchange.Redis;
-using Elf.Core.AccessRateLimit;
+using Elf.AccessRateLimit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -259,10 +259,10 @@ options.ExemptWhen = ctx =>
 
 ## Samples
 
-The console app `Elf.Test.Samples` spins up a local in-process WebApplication and exercises the limiter.
+The console app `Elf.AccessRateLimit.Tests` spins up a local in-process WebApplication and exercises the limiter.
 
 ```bash
-dotnet run --project Elf.Test.Samples -- --redis localhost:6379 --sample all
+dotnet run --project Elf.AccessRateLimit.Tests -- --redis localhost:6379 --sample all
 ```
 
 Samples available: `all`, `basic`, `keys`, `escalation`.
