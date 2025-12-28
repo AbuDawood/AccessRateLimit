@@ -7,7 +7,6 @@ Distributed, Redis-backed access rate limiting for expensive endpoints in ASP.NE
 Elf.Core.AccessRateLimit protects heavy endpoints (downloads, exports, reports) from abuse by enforcing rate limits across multiple app instances using Redis as the source of truth. It uses atomic Lua scripts for concurrency safety and supports per-endpoint policies, escalation penalties, and simple extension methods.
 
 Key features:
-
 - Distributed enforcement via StackExchange.Redis
 - Per-endpoint policy selection (attribute or endpoint mapping)
 - Escalating blocks for repeated violations
@@ -164,7 +163,6 @@ options.AddPolicy("export", p =>
 ### Key strategies
 
 Built-in specs:
-
 - `ip` (prefers `X-Forwarded-For` / `X-Real-IP`, falls back to `RemoteIpAddress`)
 - `user` or `user-id` (ClaimTypes.NameIdentifier)
 - `sub`
@@ -212,7 +210,6 @@ p.WithPenalty(penalty =>
 ### Headers and responses
 
 When limited, the middleware returns HTTP 429 with:
-
 - `Retry-After`
 - `X-RateLimit-Limit`
 - `X-RateLimit-Remaining`
@@ -287,7 +284,6 @@ Samples available: `all`, `basic`, `keys`, `escalation`.
 The limiter runs in middleware, resolves a policy per endpoint, builds a stable caller key, and evaluates a token bucket in Redis with an atomic Lua script. The Redis result drives allow/deny, headers, logging, and escalation penalties.
 
 Key points that enforce the limit:
-
 - Policy resolution chooses the endpoint policy or the configured default.
 - Key resolution uses policy resolvers (IP, header, claim, composite) and hashes the result before Redis.
 - Bucket scope defaults to the route pattern, but can be overridden to share limits.
