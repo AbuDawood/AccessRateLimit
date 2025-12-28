@@ -19,12 +19,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\\Elf.AccessRateLimit\\Elf.AccessRateLimit.csproj"/>
+        <ProjectReference Include="..\Elf.AccessRateLimit\Elf.AccessRateLimit.csproj"/>
         <PackageReference Include="StackExchange.Redis" Version="2.7.33"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <None Include="..\\README.md" Pack="true" PackagePath="\\" />
-    </ItemGroup>
+<ItemGroup>
+  <!-- Put the repo root README.md into the package root -->
+  <None Include="../README.md" Pack="true" PackagePath="" />
+</ItemGroup>
 
 </Project>
