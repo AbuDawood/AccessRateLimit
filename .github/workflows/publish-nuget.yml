@@ -19,9 +19,15 @@ jobs:
       - name: Restore
         run: dotnet restore
 
-      - name: Pack
-        run: dotnet pack -c Release -o out /p:ContinuousIntegrationBuild=true
+      - name: Get version from tag
+        shell: bash
+        run: |
+          TAG="${{ github.ref_name }}"     # e.g. v1.2.3
+          VER="${TAG#v}"                   # -> 1.2.3
+          echo "VERSION=$VER" >> $GITHUB_ENV
+
+      - name: Pack (use tag as version)
+        run: dotnet pack -c Release -o out /p:ContinuousIntegrationBuild=true /p:PackageVersion=${{ env.VERSION }}
 
       - name: Push to NuGet.org
         run: dotnet nuget push "out/*.nupkg" --api-key "${{ secrets.Abudawood_Nuget_Key }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
-
