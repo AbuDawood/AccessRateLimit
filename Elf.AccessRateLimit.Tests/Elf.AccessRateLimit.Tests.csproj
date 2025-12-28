@@ -9,6 +9,7 @@
         <Version>1.0.1</Version>
         <Authors>Abudawood</Authors>
         <Description>Light tests to test and understand the AccessRateLimit lib behavior</Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/AbuDawood/AccessRateLimit</RepositoryUrl>
     </PropertyGroup>
@@ -20,6 +21,10 @@
     <ItemGroup>
         <ProjectReference Include="..\\Elf.AccessRateLimit\\Elf.AccessRateLimit.csproj"/>
         <PackageReference Include="StackExchange.Redis" Version="2.7.33"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\\README.md" Pack="true" PackagePath="\\" />
     </ItemGroup>
 
 </Project>

@@ -19,6 +19,22 @@ Key features:
 - .NET 8
 - StackExchange.Redis connection (IConnectionMultiplexer)
 
+## Install (NuGet)
+
+NuGet package: https://www.nuget.org/packages/Elf.AccessRateLimit/
+
+```bash
+dotnet add package Elf.AccessRateLimit
+```
+
+Or add a reference in your project file:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="Elf.AccessRateLimit" Version="1.0.1" />
+</ItemGroup>
+```
+
 ## Quick start (code)
 
 ```csharp

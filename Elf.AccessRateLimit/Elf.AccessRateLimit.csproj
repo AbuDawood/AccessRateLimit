@@ -7,6 +7,7 @@
     <Version>1.0.1</Version>
     <Authors>Abudawood</Authors>
     <Description>Distributed, Redis-backed access rate limiting for expensive endpoints in ASP.NET Core (.NET 8).</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/AbuDawood/AccessRateLimit</RepositoryUrl>
   </PropertyGroup>
@@ -17,6 +18,10 @@
 
   <ItemGroup>
     <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
