@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elf.AccessRateLimit", "Elf.AccessRateLimit\Elf.AccessRateLimit.csproj", "{24B68E04-072B-413F-F0AD-3DD06A1F3C10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elf.AccessRateLimit.Tests", "Elf.AccessRateLimit.Tests\Elf.AccessRateLimit.Tests.csproj", "{A25782FD-BF6E-4639-995A-F26A14DA9F1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elf.AccessRateLimit.Samples", "Elf.AccessRateLimit.Samples\Elf.AccessRateLimit.Samples.csproj", "{A25782FD-BF6E-4639-995A-F26A14DA9F1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

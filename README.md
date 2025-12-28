@@ -275,10 +275,10 @@ options.ExemptWhen = ctx =>
 
 ## Samples
 
-The console app `Elf.AccessRateLimit.Tests` spins up a local in-process WebApplication and exercises the limiter.
+The console app `Elf.AccessRateLimit.Samples` spins up a local in-process WebApplication and exercises the limiter.
 
 ```bash
-dotnet run --project Elf.AccessRateLimit.Tests -- --redis localhost:6379 --sample all
+dotnet run --project Elf.AccessRateLimit.Samples -- --redis localhost:6379 --sample all
 ```
 
 Samples available: `all`, `basic`, `keys`, `escalation`.

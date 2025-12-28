@@ -6,9 +6,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageId>Elf.AccessRateLimit.Samples</PackageId>
-        <Version>1.0.4</Version>
+        <Version>1.0.1</Version>
         <Authors>Abudawood</Authors>
-        <Description>Light tests to test and understand the AccessRateLimit lib behavior</Description>
+        <Description>Light samples to demonstrate the AccessRateLimit lib behavior</Description>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/AbuDawood/AccessRateLimit</RepositoryUrl>

@@ -269,7 +269,7 @@ internal static class Program
 
         public static void PrintUsage()
         {
-            Console.WriteLine("Elf.AccessRateLimit.Tests usage:");
+            Console.WriteLine("Elf.AccessRateLimit.Samples usage:");
             Console.WriteLine("  --redis <connection>   Redis connection string (default: localhost:6379)");
             Console.WriteLine("  --url <baseUrl>         Base URL (default: http://127.0.0.1:5055)");
             Console.WriteLine("  --sample <all|basic|keys|escalation>");

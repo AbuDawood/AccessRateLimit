@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>Elf.AccessRateLimit</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.4</Version>
     <Authors>Abudawood</Authors>
     <Description>Distributed, Redis-backed access rate limiting for expensive endpoints in ASP.NET Core (.NET 8).</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
