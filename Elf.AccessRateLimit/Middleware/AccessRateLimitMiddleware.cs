@@ -214,7 +214,8 @@ public sealed class AccessRateLimitMiddleware
         if (attributes.Count > 0)
         {
             var attribute = attributes[^1];
-            return new AccessRateLimitMetadata(attribute.PolicyName, attribute.Scope, attribute.Cost);
+            var cost = attribute.Cost > 0 ? attribute.Cost : (int?)null;
+            return new AccessRateLimitMetadata(attribute.PolicyName, attribute.Scope, cost);
         }
 
         return null;

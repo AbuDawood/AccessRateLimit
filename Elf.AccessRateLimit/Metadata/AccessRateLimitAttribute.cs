@@ -30,7 +30,7 @@ public sealed class AccessRateLimitAttribute : Attribute
     public string? Scope { get; set; }
 
     /// <summary>
-    /// Optional per-request cost override.
+    /// Optional per-request cost override (set to a positive value to apply).
     /// </summary>
-    public int? Cost { get; set; }
+    public int Cost { get; set; } = -1;
 }
