@@ -87,6 +87,9 @@ app.Run();
       "RedisKeyPrefix": "elf:accessrl",
       "AddRateLimitHeaders": true,
       "FailOpen": true,
+      "Logging": {
+        "Detail": "Detailed"
+      },
       "Policies": {
         "download": {
           "LimitPerMinute": 10,
@@ -257,6 +260,16 @@ public sealed class RateLimitMetrics : IAccessRateLimitMetrics
 
 builder.Services.AddSingleton<IAccessRateLimitMetrics, RateLimitMetrics>();
 ```
+
+### Logging
+
+Choose between normal or detailed logs (information level or higher):
+
+```csharp
+options.Logging.Detail = AccessRateLimitLogDetail.Detailed;
+```
+
+Normal logs emit limited/blocked decisions. Detailed logs also include allowed decisions and extra fields.
 
 ### Whitelisting
 

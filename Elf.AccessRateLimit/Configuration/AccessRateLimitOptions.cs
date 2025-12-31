@@ -49,6 +49,11 @@ public sealed class AccessRateLimitOptions
     public AccessRateLimitResponseOptions Response { get; set; } = new();
 
     /// <summary>
+    /// Logging configuration for rate limit decisions.
+    /// </summary>
+    public AccessRateLimitLoggingOptions Logging { get; set; } = new();
+
+    /// <summary>
     /// Adds or replaces a named policy definition.
     /// </summary>
     public AccessRateLimitOptions AddPolicy(string name, Action<AccessRateLimitPolicyBuilder> configure)
@@ -91,4 +96,31 @@ public sealed class AccessRateLimitResponseOptions
     /// Custom response handler for rejected requests.
     /// </summary>
     public Func<HttpContext, AccessRateLimitDecision, Task>? OnRejected { get; set; }
+}
+
+/// <summary>
+/// Logging settings for access rate limiting.
+/// </summary>
+public sealed class AccessRateLimitLoggingOptions
+{
+    /// <summary>
+    /// Controls how much detail is emitted in informational logs.
+    /// </summary>
+    public AccessRateLimitLogDetail Detail { get; set; } = AccessRateLimitLogDetail.Normal;
+}
+
+/// <summary>
+/// Log detail levels for access rate limiting.
+/// </summary>
+public enum AccessRateLimitLogDetail
+{
+    /// <summary>
+    /// Logs limited/blocked decisions with minimal context.
+    /// </summary>
+    Normal = 0,
+
+    /// <summary>
+    /// Logs allowed decisions and includes additional fields.
+    /// </summary>
+    Detailed = 1
 }

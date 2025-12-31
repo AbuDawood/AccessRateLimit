@@ -41,6 +41,7 @@ public sealed class AccessRateLimitMiddleware
     {
         var endpoint = context.GetEndpoint();
         var options = _options.CurrentValue;
+        var logDetail = options.Logging.Detail;
         var metadata = ResolveMetadata(endpoint);
 
         // Resolve policy name from endpoint metadata or defaults.
@@ -141,12 +142,18 @@ public sealed class AccessRateLimitMiddleware
             }
 
             _metrics.OnAllowed(decision);
-            _logger.LogDebug(
-                "Access rate limit allowed policy={Policy} scope={Scope} key={KeyHash} remaining={Remaining}",
-                decision.PolicyName,
-                decision.Scope,
-                AccessRateLimitKeyUtilities.Fingerprint(decision.KeyHash),
-                decision.Remaining);
+            if (logDetail == AccessRateLimitLogDetail.Detailed)
+            {
+                _logger.LogInformation(
+                    "Access rate limit allowed policy={Policy} scope={Scope} key={KeyHash} limit={Limit} remaining={Remaining} cost={Cost} resetAt={ResetAt}",
+                    decision.PolicyName,
+                    decision.Scope,
+                    AccessRateLimitKeyUtilities.Fingerprint(decision.KeyHash),
+                    decision.Limit,
+                    decision.Remaining,
+                    decision.Cost,
+                    decision.Reset);
+            }
 
             await _next(context).ConfigureAwait(false);
             return;
@@ -163,23 +170,57 @@ public sealed class AccessRateLimitMiddleware
         if (storeResult.Blocked)
         {
             _metrics.OnBlocked(decision);
-            _logger.LogWarning(
-                "Access rate limit blocked policy={Policy} scope={Scope} key={KeyHash} retryAfter={RetryAfterSeconds} violations={Violations}",
-                decision.PolicyName,
-                decision.Scope,
-                AccessRateLimitKeyUtilities.Fingerprint(decision.KeyHash),
-                (int)Math.Ceiling(decision.RetryAfter.TotalSeconds),
-                decision.Violations);
+            if (logDetail == AccessRateLimitLogDetail.Detailed)
+            {
+                _logger.LogWarning(
+                    "Access rate limit blocked policy={Policy} scope={Scope} key={KeyHash} limit={Limit} remaining={Remaining} cost={Cost} retryAfter={RetryAfterSeconds} violations={Violations} resetAt={ResetAt}",
+                    decision.PolicyName,
+                    decision.Scope,
+                    AccessRateLimitKeyUtilities.Fingerprint(decision.KeyHash),
+                    decision.Limit,
+                    decision.Remaining,
+                    decision.Cost,
+                    (int)Math.Ceiling(decision.RetryAfter.TotalSeconds),
+                    decision.Violations,
+                    decision.Reset);
+            }
+            else
+            {
+                _logger.LogWarning(
+                    "Access rate limit blocked policy={Policy} scope={Scope} key={KeyHash} retryAfter={RetryAfterSeconds} violations={Violations}",
+                    decision.PolicyName,
+                    decision.Scope,
+                    AccessRateLimitKeyUtilities.Fingerprint(decision.KeyHash),
+                    (int)Math.Ceiling(decision.RetryAfter.TotalSeconds),
+                    decision.Violations);
+            }
         }
         else
         {
             _metrics.OnLimited(decision);
-            _logger.LogInformation(
-                "Access rate limit limited policy={Policy} scope={Scope} key={KeyHash} retryAfter={RetryAfterSeconds}",
-                decision.PolicyName,
-                decision.Scope,
-                AccessRateLimitKeyUtilities.Fingerprint(decision.KeyHash),
-                (int)Math.Ceiling(decision.RetryAfter.TotalSeconds));
+            if (logDetail == AccessRateLimitLogDetail.Detailed)
+            {
+                _logger.LogInformation(
+                    "Access rate limit limited policy={Policy} scope={Scope} key={KeyHash} limit={Limit} remaining={Remaining} cost={Cost} retryAfter={RetryAfterSeconds} violations={Violations} resetAt={ResetAt}",
+                    decision.PolicyName,
+                    decision.Scope,
+                    AccessRateLimitKeyUtilities.Fingerprint(decision.KeyHash),
+                    decision.Limit,
+                    decision.Remaining,
+                    decision.Cost,
+                    (int)Math.Ceiling(decision.RetryAfter.TotalSeconds),
+                    decision.Violations,
+                    decision.Reset);
+            }
+            else
+            {
+                _logger.LogInformation(
+                    "Access rate limit limited policy={Policy} scope={Scope} key={KeyHash} retryAfter={RetryAfterSeconds}",
+                    decision.PolicyName,
+                    decision.Scope,
+                    AccessRateLimitKeyUtilities.Fingerprint(decision.KeyHash),
+                    (int)Math.Ceiling(decision.RetryAfter.TotalSeconds));
+            }
         }
 
         if (options.Response.OnRejected != null)
