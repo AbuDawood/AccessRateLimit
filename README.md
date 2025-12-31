@@ -109,6 +109,21 @@ app.Run();
 builder.Services.AddElfAccessRateLimit(builder.Configuration);
 ```
 
+By default, `AddElfAccessRateLimit(IConfiguration)` binds to `Elf:AccessRateLimit`. To load
+settings from a different section, pass the section key explicitly:
+
+```csharp
+builder.Services.AddElfAccessRateLimit("RateLimit");
+```
+
+```json
+{
+  "RateLimit": {
+    "DefaultPolicyName": "download"
+  }
+}
+```
+
 ## API usage and integration
 
 ### Middleware

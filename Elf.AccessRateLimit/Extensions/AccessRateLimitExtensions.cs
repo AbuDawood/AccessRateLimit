@@ -11,6 +11,8 @@ namespace Elf.AccessRateLimit;
 /// </summary>
 public static class AccessRateLimitExtensions
 {
+    private const string DefaultSectionKey = "Elf:AccessRateLimit";
+
     /// <summary>
     /// Registers access rate limiting with a code-based configuration.
     /// </summary>
@@ -50,7 +52,29 @@ public static class AccessRateLimitExtensions
             throw new ArgumentNullException(nameof(configuration));
         }
 
-        return services.AddElfAccessRateLimit(configuration.GetSection("Elf:AccessRateLimit"));
+        return services.AddElfAccessRateLimit(configuration.GetSection(DefaultSectionKey));
+    }
+
+    /// <summary>
+    /// Registers access rate limiting using a configuration section key.
+    /// </summary>
+    public static IServiceCollection AddElfAccessRateLimit(
+        this IServiceCollection services,
+        string sectionKey)
+    {
+        if (services == null)
+        {
+            throw new ArgumentNullException(nameof(services));
+        }
+
+        if (string.IsNullOrWhiteSpace(sectionKey))
+        {
+            throw new ArgumentException("Section key is required.", nameof(sectionKey));
+        }
+
+        services.AddOptions<AccessRateLimitOptions>().BindConfiguration(sectionKey);
+        RegisterServices(services);
+        return services;
     }
 
     /// <summary>
