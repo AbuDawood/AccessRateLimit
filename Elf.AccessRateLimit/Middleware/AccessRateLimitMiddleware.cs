@@ -96,9 +96,11 @@ public sealed class AccessRateLimitMiddleware
         // Hash the key before writing to Redis.
         var keyHash = AccessRateLimitKeyUtilities.Hash(key);
         var scopeKey = AccessRateLimitKeyUtilities.NormalizeSegment(scope);
-        var bucketKey = $"{options.RedisKeyPrefix}:bucket:{policy.Name}:{scopeKey}:{keyHash}";
-        var blockKey = $"{options.RedisKeyPrefix}:block:{policy.Name}:{scopeKey}:{keyHash}";
-        var violationKey = $"{options.RedisKeyPrefix}:viol:{policy.Name}:{scopeKey}:{keyHash}";
+        // Use a Redis hash tag so multi-key scripts stay on one cluster slot.
+        var hashTag = AccessRateLimitKeyUtilities.Hash($"{policy.Name}:{scopeKey}:{keyHash}");
+        var bucketKey = $"{options.RedisKeyPrefix}:{{{hashTag}}}:bucket:{policy.Name}:{scopeKey}:{keyHash}";
+        var blockKey = $"{options.RedisKeyPrefix}:{{{hashTag}}}:block:{policy.Name}:{scopeKey}:{keyHash}";
+        var violationKey = $"{options.RedisKeyPrefix}:{{{hashTag}}}:viol:{policy.Name}:{scopeKey}:{keyHash}";
 
         AccessRateLimitStoreResult storeResult;
         try
