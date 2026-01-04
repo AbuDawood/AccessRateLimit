@@ -69,6 +69,20 @@ internal static class AccessRateLimitPolicyNormalizer
             throw new InvalidOperationException($"Policy '{policy.Name}' anonymous limit must be positive.");
         }
 
+        if (policy.AuthenticatedHeaders != null)
+        {
+            for (var i = 0; i < policy.AuthenticatedHeaders.Count; i++)
+            {
+                var header = policy.AuthenticatedHeaders[i];
+                if (string.IsNullOrWhiteSpace(header))
+                {
+                    throw new InvalidOperationException($"Policy '{policy.Name}' authenticated headers must be non-empty.");
+                }
+
+                policy.AuthenticatedHeaders[i] = header.Trim();
+            }
+        }
+
         if (policy.Penalty == null)
         {
             policy.Penalty = new AccessRateLimitPenaltyOptions();

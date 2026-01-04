@@ -53,6 +53,16 @@ public sealed class AccessRateLimitPolicy
     public int? AnonymousLimit { get; set; }
 
     /// <summary>
+    /// Predicate that determines whether a request is authenticated.
+    /// </summary>
+    public Func<HttpContext, bool>? AuthenticatedWhen { get; set; }
+
+    /// <summary>
+    /// Header names that indicate an authenticated request when present.
+    /// </summary>
+    public List<string>? AuthenticatedHeaders { get; set; }
+
+    /// <summary>
     /// Bucket name to share limits across endpoints.
     /// </summary>
     public string? SharedBucket { get; set; }
@@ -105,6 +115,8 @@ public sealed class AccessRateLimitPolicy
             Cost = Cost,
             AuthenticatedLimit = AuthenticatedLimit,
             AnonymousLimit = AnonymousLimit,
+            AuthenticatedWhen = AuthenticatedWhen,
+            AuthenticatedHeaders = AuthenticatedHeaders == null ? null : new List<string>(AuthenticatedHeaders),
             SharedBucket = SharedBucket,
             KeyResolvers = new List<string>(KeyResolvers ?? new List<string>()),
             KeyStrategy = KeyStrategy,
@@ -118,17 +130,76 @@ public sealed class AccessRateLimitPolicy
 
     internal int ResolveLimit(HttpContext context)
     {
-        if (context.User?.Identity?.IsAuthenticated == true && AuthenticatedLimit.HasValue)
+        return ResolveLimit(context, options: null);
+    }
+
+    internal int ResolveLimit(HttpContext context, AccessRateLimitOptions? options)
+    {
+        var isAuthenticated = ResolveIsAuthenticated(context, options);
+        if (isAuthenticated && AuthenticatedLimit.HasValue)
         {
             return AuthenticatedLimit.Value;
         }
 
-        if (context.User?.Identity?.IsAuthenticated != true && AnonymousLimit.HasValue)
+        if (!isAuthenticated && AnonymousLimit.HasValue)
         {
             return AnonymousLimit.Value;
         }
 
         return Limit;
+    }
+
+    private bool ResolveIsAuthenticated(HttpContext context, AccessRateLimitOptions? options)
+    {
+        if (AuthenticatedWhen != null)
+        {
+            return AuthenticatedWhen(context);
+        }
+
+        if (options?.AuthenticatedWhen != null)
+        {
+            return options.AuthenticatedWhen(context);
+        }
+
+        if (context.User?.Identity?.IsAuthenticated == true)
+        {
+            return true;
+        }
+
+        var headerNames = AuthenticatedHeaders ?? options?.AuthenticatedHeaders;
+        return HasAuthenticatedHeader(context, headerNames);
+    }
+
+    private static bool HasAuthenticatedHeader(HttpContext context, IReadOnlyList<string>? headerNames)
+    {
+        if (headerNames == null || headerNames.Count == 0)
+        {
+            return false;
+        }
+
+        foreach (var headerName in headerNames)
+        {
+            if (string.IsNullOrWhiteSpace(headerName))
+            {
+                continue;
+            }
+
+            var trimmed = headerName.Trim();
+            if (!context.Request.Headers.TryGetValue(trimmed, out var values))
+            {
+                continue;
+            }
+
+            foreach (var value in values)
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     internal int ResolveCost(HttpContext context, int? overrideCost)

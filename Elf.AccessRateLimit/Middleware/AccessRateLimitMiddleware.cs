@@ -88,7 +88,7 @@ public sealed class AccessRateLimitMiddleware
             cost = 1;
         }
 
-        var limit = policy.ResolveLimit(context);
+        var limit = policy.ResolveLimit(context, options);
         if (cost > limit)
         {
             cost = limit;

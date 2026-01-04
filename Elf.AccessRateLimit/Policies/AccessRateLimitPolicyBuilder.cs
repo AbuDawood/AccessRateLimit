@@ -82,6 +82,45 @@ public sealed class AccessRateLimitPolicyBuilder
     }
 
     /// <summary>
+    /// Sets a predicate to determine whether a request is authenticated.
+    /// </summary>
+    public AccessRateLimitPolicyBuilder AuthenticatedWhen(Func<HttpContext, bool> predicate)
+    {
+        if (predicate is null)
+        {
+            throw new ArgumentNullException(nameof(predicate));
+        }
+
+        _policy.AuthenticatedWhen = predicate;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets header names that indicate an authenticated request when present.
+    /// </summary>
+    public AccessRateLimitPolicyBuilder WithAuthenticatedHeaders(params string[] headers)
+    {
+        if (headers == null || headers.Length == 0)
+        {
+            throw new ArgumentException("At least one header name is required.", nameof(headers));
+        }
+
+        var normalized = new List<string>(headers.Length);
+        foreach (var header in headers)
+        {
+            if (string.IsNullOrWhiteSpace(header))
+            {
+                throw new ArgumentException("Header names cannot be empty.", nameof(headers));
+            }
+
+            normalized.Add(header.Trim());
+        }
+
+        _policy.AuthenticatedHeaders = normalized;
+        return this;
+    }
+
+    /// <summary>
     /// Uses a shared bucket name across endpoints.
     /// </summary>
     public AccessRateLimitPolicyBuilder WithSharedBucket(string bucket)

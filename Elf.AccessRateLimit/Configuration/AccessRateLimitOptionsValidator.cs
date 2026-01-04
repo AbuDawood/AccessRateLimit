@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.Extensions.Options;
 
 namespace Elf.AccessRateLimit;
@@ -21,6 +22,14 @@ internal sealed class AccessRateLimitOptionsValidator : IValidateOptions<AccessR
             catch (Exception ex)
             {
                 errors.Add(ex.Message);
+            }
+        }
+
+        if (options.AuthenticatedHeaders != null)
+        {
+            if (options.AuthenticatedHeaders.Any(string.IsNullOrWhiteSpace))
+            {
+                errors.Add("Authenticated headers must be non-empty.");
             }
         }
 

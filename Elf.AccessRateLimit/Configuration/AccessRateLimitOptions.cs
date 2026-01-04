@@ -44,6 +44,16 @@ public sealed class AccessRateLimitOptions
     public Func<HttpContext, bool>? ExemptWhen { get; set; }
 
     /// <summary>
+    /// Predicate that determines whether a request is authenticated.
+    /// </summary>
+    public Func<HttpContext, bool>? AuthenticatedWhen { get; set; }
+
+    /// <summary>
+    /// Header names that indicate an authenticated request when present.
+    /// </summary>
+    public List<string>? AuthenticatedHeaders { get; set; }
+
+    /// <summary>
     /// Response customization for rejected requests.
     /// </summary>
     public AccessRateLimitResponseOptions Response { get; set; } = new();

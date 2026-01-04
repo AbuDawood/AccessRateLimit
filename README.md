@@ -141,6 +141,7 @@ app.UseElfAccessRateLimit();
 ```
 
 Place the middleware after routing (so endpoint metadata is available) and after auth if limits depend on claims.
+You can also opt into trusted headers to treat requests as authenticated when running behind a gateway.
 
 ### Endpoint mapping
 
@@ -173,6 +174,7 @@ options.AddPolicy("export", p =>
     p.WithSharedBucket("exports");
     p.ForAuthenticated(10);
     p.ForAnonymous(3);
+    p.WithAuthenticatedHeaders("X-Client-Id");
     p.WithCost(2);
     p.WithKeyResolverSpecs("ip", "header:X-Api-Key");
 });
@@ -188,10 +190,32 @@ options.AddPolicy("export", p =>
     "SharedBucket": "exports",
     "AuthenticatedLimit": 10,
     "AnonymousLimit": 3,
+    "AuthenticatedHeaders": [ "X-Client-Id" ],
     "Cost": 2,
     "KeyStrategy": "ip,header:X-Api-Key"
   }
 }
+```
+
+### Authenticated detection
+
+By default, authenticated callers are detected via `HttpContext.User.Identity.IsAuthenticated`.
+To trust gateway-provided headers instead, set header names globally or per policy:
+
+```csharp
+options.AuthenticatedHeaders = new List<string> { "X-User-Id" };
+
+options.AddPolicy("download", p =>
+{
+    p.WithAuthenticatedHeaders("X-User-Id");
+});
+```
+
+Use `AuthenticatedWhen` in code for custom logic (it overrides the default user/header checks):
+
+```csharp
+options.AuthenticatedWhen = ctx => ctx.User.Identity?.IsAuthenticated == true
+    || ctx.Request.Headers.ContainsKey("X-User-Id");
 ```
 
 ### Key strategies
